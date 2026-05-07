@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CropGuard AI – Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="leaf-bg"></div>
+<div class="particles" id="particles"></div>
+
+<div class="wrapper">
+    <!-- NAV -->
+    <nav class="navbar">
+        <div class="logo">Crop<span>Guard</span> AI</div>
+        <div class="nav-links">
+            <a th:href="@{/history}" class="nav-link">📋 History</a>
+            <span class="nav-user">👤 <span th:text="${username}"></span></span>
+            <a th:href="@{/logout}" class="nav-logout">Logout</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-left">
+            <div class="tag-line">Smart Agriculture · AI Powered</div>
+            <h1>Protect Your Crops<br><span class="highlight">Before It's Too Late</span></h1>
+            <p class="hero-desc">
+                Upload a crop leaf photo and get instant AI analysis — disease detection, fertilizer recommendation, Tamil advisory, and more.
+            </p>
+            <div class="stats-row">
+                <div class="stat"><div class="stat-n">4+</div><div class="stat-l">Diseases</div></div>
+                <div class="stat-div"></div>
+                <div class="stat"><div class="stat-n">98%</div><div class="stat-l">Fast Result</div></div>
+                <div class="stat-div"></div>
+                <div class="stat"><div class="stat-n">2</div><div class="stat-l">Languages</div></div>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <div class="upload-card">
+                <div class="upload-top-glow"></div>
+                <span class="upload-label">📸 Upload Leaf Image</span>
+
+                <div th:if="${error}" class="error-msg" th:text="${error}"></div>
+
+                <form method="POST" enctype="multipart/form-data" th:action="@{/analyze}" id="uploadForm">
+                    <div class="drop-zone" id="dropZone">
+                        <input type="file" name="image" id="fileInput" required accept="image/*">
+                        <div id="previewWrap" style="display:none;">
+                            <img id="previewImg" src="#" alt="Preview">
+                            <p id="previewName"></p>
+                        </div>
+                        <div id="dropPrompt">
+                            <span class="drop-icon">🌿</span>
+                            <p class="drop-text">Drop your leaf image here</p>
+                            <p class="drop-sub">Click to browse · JPG, PNG, WEBP</p>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary" id="analyzeBtn">🔬 Analyze Now</button>
+                </form>
+
+                <div class="feat-pills">
+                    <span class="pill">📊 Health Score</span>
+                    <span class="pill">🌦️ Weather Advice</span>
+                    <span class="pill">📍 Soil Tips</span>
+                    <span class="pill">🗣️ Tamil</span>
+                    <span class="pill">🔊 Voice Output</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="footer-strip">© 2025 CropGuard AI · Protecting Farmers, One Leaf at a Time 🌾</div>
+</div>
+
+<script>
+    // Particles
+    const pc = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div'); p.className = 'particle';
+        p.style.cssText = `left:${Math.random()*100}vw;width:${Math.random()*4+2}px;height:${Math.random()*4+2}px;animation-duration:${Math.random()*12+8}s;animation-delay:${Math.random()*10}s`;
+        pc.appendChild(p);
+    }
+    // Preview
+    document.getElementById('fileInput').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            document.getElementById('dropPrompt').style.display = 'none';
+            document.getElementById('previewWrap').style.display = 'block';
+            document.getElementById('previewImg').src = e.target.result;
+            document.getElementById('previewName').textContent = '✅ ' + file.name;
+        };
+        reader.readAsDataURL(file);
+    });
+    // Loading state
+    document.getElementById('uploadForm').addEventListener('submit', () => {
+        document.getElementById('analyzeBtn').textContent = '⏳ Analyzing...';
+        document.getElementById('analyzeBtn').disabled = true;
+    });
+</script>
+</body>
+</html>
